@@ -1,7 +1,7 @@
 services:
   - type: web
-    name: my-app
+    name: 5tart-travel
     env: node
     buildCommand: npm install
     startCommand: npm start
-    rootDirectory: /
+    rootDirectory: ./
