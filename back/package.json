@@ -44,7 +44,7 @@
     "@types/hpp": "^0.2.7",
     "@types/ioredis": "^4.28.10",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/nodemailer": "^6.4.15",
+    "@types/nodemailer": "^8.0.2",
     "@types/swagger-ui-express": "^4.1.8"
   },
   "overrides": {
