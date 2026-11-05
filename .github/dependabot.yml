@@ -1,38 +1,13 @@
 version: 2
 updates:
-  # Escaneo y actualización de dependencias npm agrupadas
   - package-ecosystem: "npm"
     directory: "/back"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "America/Argentina/Buenos_Aires"
-    open-pull-requests-limit: 3
-    groups:
-      production-dependencies:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-    # Ignorar versiones mayores con breaking changes agresivos en librerías core
-    ignore:
-      - dependency-name: "typeorm"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "express"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "ioredis"
-        update-types: ["version-update:semver-major"]
-    labels:
-      - "security"
-      - "dependencies"
+      interval: "monthly"
+    open-pull-requests-limit: 0
 
-  # Escaneo de imágenes base de Docker
   - package-ecosystem: "docker"
     directory: "/back"
     schedule:
-      interval: "weekly"
-    labels:
-      - "docker"
-      - "security"
+      interval: "monthly"
+    open-pull-requests-limit: 0
