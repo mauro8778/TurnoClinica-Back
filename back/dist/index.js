@@ -24,6 +24,7 @@ async function bootstrap() {
         const appServer = server_1.default.listen(envs_1.PORT, () => {
             console.log(`====================================================`);
             console.log(`🚀 TurnoClínica Enterprise API lista en puerto: ${envs_1.PORT}`);
+            console.log(`📑 Swagger API Docs: http://localhost:${envs_1.PORT}/api-docs`);
             console.log(`🏥 Healthcheck: http://localhost:${envs_1.PORT}/health`);
             console.log(`🤖 Módulo de Triaje IA: http://localhost:${envs_1.PORT}/triage/assess`);
             console.log(`====================================================`);

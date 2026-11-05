@@ -6,16 +6,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const index_routes_1 = __importDefault(require("./routes/index.routes"));
 const envs_1 = require("./config/envs");
+const swagger_1 = require("./config/swagger");
 const rateLimiter_middleware_1 = require("./middlewares/rateLimiter.middleware");
 const errorHandler_middleware_1 = require("./middlewares/errorHandler.middleware");
 const server = (0, express_1.default)();
 // 1. Headers de Seguridad HTTP (Protección XSS, clickjacking, etc.)
-server.use((0, helmet_1.default)());
+// Permitir scripts inline e imágenes para la UI de Swagger
+server.use((0, helmet_1.default)({
+    contentSecurityPolicy: false,
+}));
 // 2. Parser JSON optimizado
 server.use(express_1.default.json({ limit: "1mb" }));
 server.use(express_1.default.urlencoded({ extended: true, limit: "1mb" }));
+// 3. Documentación Interactiva Swagger / OpenAPI 3.0
+server.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_1.swaggerSpec, {
+    customSiteTitle: "TurnoClínica API Docs",
+    swaggerOptions: {
+        persistAuthorization: true,
+        displayRequestDuration: true,
+        filter: true,
+    },
+}));
+server.use("/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_1.swaggerSpec, {
+    customSiteTitle: "TurnoClínica API Docs",
+    swaggerOptions: {
+        persistAuthorization: true,
+        displayRequestDuration: true,
+        filter: true,
+    },
+}));
+server.get("/docs.json", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.send(swagger_1.swaggerSpec);
+});
 // 3. CORS para alta disponibilidad y multi-entorno
 const allowedOrigins = envs_1.envs.CORS_ORIGIN.split(",").map((o) => o.trim());
 server.use((0, cors_1.default)({

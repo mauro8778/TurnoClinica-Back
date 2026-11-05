@@ -7,6 +7,7 @@
 [![Redis](https://img.shields.io/badge/Redis-7.x-red.svg)](https://redis.io/)
 [![BullMQ](https://img.shields.io/badge/BullMQ-Queues-orange.svg)](https://bullmq.io/)
 [![Gemini AI](https://img.shields.io/badge/Google_Gemini-2.0_Flash-purple.svg)](https://ai.google.dev/)
+[![Swagger](https://img.shields.io/badge/Swagger-OpenAPI_3.0-85EA2D.svg?logo=swagger&logoColor=black)](http://localhost:3001/api-docs)
 [![Docker](https://img.shields.io/badge/Docker-Multi--stage-2496ED.svg)](https://www.docker.com/)
 
 Plataforma backend de alto rendimiento diseñada para procesar **+1,000,000 de usuarios/día** (~15 millones de peticiones/día), con **bloqueos distribuidos contra condiciones de carrera (Race Conditions)**, **colas asíncronas con BullMQ**, y un **motor de Triaje Clínico Inteligente impulsado por IA** bajo el estándar médico internacional **ESI (Emergency Severity Index)**.
@@ -91,6 +92,11 @@ docker compose up --build -d
 Verificar estado de los contenedores:
 ```bash
 docker compose ps
+```
+
+Acceder a la documentación interactiva Swagger:
+```bash
+http://localhost:3001/api-docs
 ```
 
 Acceder al endpoint de salud:
