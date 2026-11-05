@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
+const hpp_1 = __importDefault(require("hpp"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const index_routes_1 = __importDefault(require("./routes/index.routes"));
 const envs_1 = require("./config/envs");
@@ -13,14 +14,16 @@ const swagger_1 = require("./config/swagger");
 const rateLimiter_middleware_1 = require("./middlewares/rateLimiter.middleware");
 const errorHandler_middleware_1 = require("./middlewares/errorHandler.middleware");
 const server = (0, express_1.default)();
-// 1. Headers de Seguridad HTTP (Protección XSS, clickjacking, etc.)
-// Permitir scripts inline e imágenes para la UI de Swagger
+// 1. Headers de Seguridad HTTP (Protección OWASP contra XSS, clickjacking, etc.)
 server.use((0, helmet_1.default)({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: false, // Habilitado para renderizar Swagger UI
+    crossOriginEmbedderPolicy: false,
 }));
-// 2. Parser JSON optimizado
+// 2. Parser JSON optimizado con límite estricto de payload (Anti-DoS)
 server.use(express_1.default.json({ limit: "1mb" }));
 server.use(express_1.default.urlencoded({ extended: true, limit: "1mb" }));
+// 3. Prevención de Ataques de Contaminación de Parámetros HTTP (HPP Protection)
+server.use((0, hpp_1.default)());
 // 3. Documentación Interactiva Swagger / OpenAPI 3.0
 server.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_1.swaggerSpec, {
     customSiteTitle: "TurnoClínica API Docs",

@@ -1,12 +1,12 @@
 import { Worker, Job } from "bullmq";
-import nodemailer from "nodemailer";
+import nodemailer, { Transporter } from "nodemailer";
 import { redisConfig } from "../config/redis";
 import { envs } from "../config/envs";
 import { EmailJobData } from "../services/queue.service";
 
-let transporter: nodemailer.Transporter | null = null;
+let transporter: Transporter | null = null;
 
-function getMailTransporter(): nodemailer.Transporter {
+function getMailTransporter(): Transporter {
   if (!transporter) {
     if (envs.SMTP_USER && envs.SMTP_PASS) {
       transporter = nodemailer.createTransport({

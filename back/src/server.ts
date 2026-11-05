@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import hpp from "hpp";
 import swaggerUi from "swagger-ui-express";
 import router from "./routes/index.routes";
 import { envs } from "./config/envs";
@@ -10,17 +11,20 @@ import { errorHandler } from "./middlewares/errorHandler.middleware";
 
 const server = express();
 
-// 1. Headers de Seguridad HTTP (Protección XSS, clickjacking, etc.)
-// Permitir scripts inline e imágenes para la UI de Swagger
+// 1. Headers de Seguridad HTTP (Protección OWASP contra XSS, clickjacking, etc.)
 server.use(
   helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: false, // Habilitado para renderizar Swagger UI
+    crossOriginEmbedderPolicy: false,
   })
 );
 
-// 2. Parser JSON optimizado
+// 2. Parser JSON optimizado con límite estricto de payload (Anti-DoS)
 server.use(express.json({ limit: "1mb" }));
 server.use(express.urlencoded({ extended: true, limit: "1mb" }));
+
+// 3. Prevención de Ataques de Contaminación de Parámetros HTTP (HPP Protection)
+server.use(hpp());
 
 // 3. Documentación Interactiva Swagger / OpenAPI 3.0
 server.use(

@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # Escaneo y actualización semanal de dependencias npm
+  - package-ecosystem: "npm"
+    directory: "/back"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Argentina/Buenos_Aires"
+    open-pull-requests-limit: 10
+    labels:
+      - "security"
+      - "dependencies"
+    commit-message:
+      prefix: "security"
+      include: "scope"
+
+  # Escaneo de imágenes base de Docker
+  - package-ecosystem: "docker"
+    directory: "/back"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "docker"
+      - "security"
