@@ -1,26 +1,36 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.credentialModel = exports.appoimentModel = exports.userModel = exports.AppDataSource = void 0;
-// src/config/db-config.ts
-require("dotenv/config");
+exports.appoimentModel = exports.triageModel = exports.specialtyModel = exports.doctorModel = exports.appointmentModel = exports.credentialModel = exports.userModel = exports.AppDataSource = void 0;
+require("reflect-metadata");
 const typeorm_1 = require("typeorm");
-const user_1 = require("../entities/user");
-const credential_1 = require("../entities/credential");
-const appoiments_1 = require("../entities/appoiments");
+const envs_1 = require("./envs");
+const entities_1 = require("../entities");
 exports.AppDataSource = new typeorm_1.DataSource({
-    type: process.env.DB_TYPE,
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT || "5432", 10),
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    dropSchema: true,
-    synchronize: true,
-    logging: false,
-    entities: [user_1.user, credential_1.credential, appoiments_1.appoiments],
+    type: "postgres",
+    host: envs_1.envs.DB_HOST,
+    port: envs_1.envs.DB_PORT,
+    username: envs_1.envs.DB_USERNAME,
+    password: envs_1.envs.DB_PASSWORD,
+    database: envs_1.envs.DB_DATABASE,
+    dropSchema: false, // ¡Protección crítica contra borrado accidental de datos!
+    synchronize: envs_1.envs.NODE_ENV === "development",
+    logging: envs_1.envs.NODE_ENV === "development" ? ["error", "warn"] : false,
+    entities: [entities_1.User, entities_1.Credential, entities_1.Doctor, entities_1.Specialty, entities_1.Appointment, entities_1.TriageAssessment],
     subscribers: [],
     migrations: [],
+    extra: {
+        // Connection Pool optimizado para alta concurrencia (~1M peticiones/día)
+        max: 25,
+        min: 5,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 5000,
+    },
 });
-exports.userModel = exports.AppDataSource.getRepository(user_1.user);
-exports.appoimentModel = exports.AppDataSource.getRepository(appoiments_1.appoiments);
-exports.credentialModel = exports.AppDataSource.getRepository(credential_1.credential);
+exports.userModel = exports.AppDataSource.getRepository(entities_1.User);
+exports.credentialModel = exports.AppDataSource.getRepository(entities_1.Credential);
+exports.appointmentModel = exports.AppDataSource.getRepository(entities_1.Appointment);
+exports.doctorModel = exports.AppDataSource.getRepository(entities_1.Doctor);
+exports.specialtyModel = exports.AppDataSource.getRepository(entities_1.Specialty);
+exports.triageModel = exports.AppDataSource.getRepository(entities_1.TriageAssessment);
+// Alias de retrocompatibilidad
+exports.appoimentModel = exports.appointmentModel;

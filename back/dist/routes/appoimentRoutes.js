@@ -1,10 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const appoimentController_1 = require("../controllers/appoimentController");
-const router = (0, express_1.Router)();
-router.get("/", appoimentController_1.getAppoiment);
-router.get("/:id", appoimentController_1.getAppoimentid);
-router.post("/agendar", appoimentController_1.agendarAppoiment);
-router.put("/cancelar/:id", appoimentController_1.cancelarAppoiment);
-exports.default = router;
+const appointment_routes_1 = __importDefault(require("./appointment.routes"));
+exports.default = appointment_routes_1.default;

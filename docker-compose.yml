@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # 🐘 Base de Datos Relacional PostgreSQL 16
+  # ==========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: turnoclinica-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: turnoclinica
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d turnoclinica"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - turnoclinica-network
+
+  # ==========================================
+  # ⚡ Redis 7 (Caché, Rate Limit y Colas BullMQ)
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: turnoclinica-redis
+    restart: always
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - turnoclinica-network
+
+  # ==========================================
+  # 🚀 Instancia API Node.js (TurnoClínica API)
+  # ==========================================
+  api:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: turnoclinica-api
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgrespassword
+      DB_DATABASE: turnoclinica
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: production_jwt_secret_high_entropy_987654321
+      JWT_EXPIRES_IN: 1h
+      JWT_REFRESH_SECRET: production_refresh_secret_high_entropy_123456789
+      JWT_REFRESH_EXPIRES_IN: 7d
+      CORS_ORIGIN: "http://localhost:5173,http://localhost:3000"
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: ${SMTP_USER:-clinicaosorio77@gmail.com}
+      SMTP_PASS: ${SMTP_PASS:-}
+      EMAIL_FROM: "Clínica Osorio <no-reply@clinicaosorio.com>"
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - turnoclinica-network
+
+networks:
+  turnoclinica-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
