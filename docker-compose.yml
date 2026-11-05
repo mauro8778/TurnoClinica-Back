@@ -54,7 +54,7 @@ services:
     container_name: turnoclinica-api
     restart: always
     ports:
-      - "3001:3001"
+      - "${HOST_PORT:-3005}:3001"
     environment:
       NODE_ENV: production
       PORT: 3001
