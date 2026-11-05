@@ -29,12 +29,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          cache-dependency-path: back/package-lock.json
 
       - name: Install Dependencies
         working-directory: ./back
-        run: npm ci
+        run: npm ci --prefer-offline || npm install
 
       - name: Run Strict NPM Security Audit
         working-directory: ./back
