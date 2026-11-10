@@ -222,4 +222,4 @@ curl -X POST http://localhost:3001/triage/assess \
 
 Desarrollado por **Mauro Diaz**  
 - **GitHub:** [@mauro8778](https://github.com/mauro8778)
-- **LinkedIn:** [Mauro Diaz](https://www.linkedin.com/)
+- **LinkedIn:** [Mauro Diaz](https://www.linkedin.com/in/mauro-diaz-dev/)
